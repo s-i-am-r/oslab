@@ -4,7 +4,8 @@
 #include<stdlib.h>
 #include<inttypes.h>
 #include<signal.h>
-pthread_t par_lot[29];
+#define LOT 5
+pthread_t par_lot[LOT];
 typedef struct queue{
     uint64_t index;
     struct queue* next;
@@ -55,7 +56,7 @@ void*park_a_car(void*arg){
     uint64_t n = pop_queue(&lots);
     par_lot[n]=pthread_self();
     printf("parked: car %lu in %d\n",par_lot[n],n);
-    usleep(rand()%3000000);
+    usleep(rand()%4300000);
     printf("released: car %lu in %d\n",par_lot[n],n);
     push_queue(n,&lots);
     if (cars.size)
@@ -68,7 +69,7 @@ void*park_a_car(void*arg){
 }
 
 int main(){
-    for (size_t i = 0; i < 29; i++)
+    for (size_t i = 0; i < LOT; i++)
     {
         push_queue(i,&lots);
     }
