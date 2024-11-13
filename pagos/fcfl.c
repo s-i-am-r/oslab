@@ -37,7 +37,7 @@ typedef struct q{
     node*tail;
 
 }q;
-
+void push(q* qq,int )
 void page_them(q* fq,int_array* arr,int fr_sz){
     int done=0;
     int frames[fr_sz];
@@ -49,7 +49,8 @@ void page_them(q* fq,int_array* arr,int fr_sz){
     
     for (; done< fr_sz;done++)
     {
-        frames[done]=arr->ptr + done;    
+        frames[done]=arr->ptr + done; 
+
     }
     while (done<arr->size)
     {

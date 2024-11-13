@@ -34,8 +34,8 @@ void free_frames(Frames *f) {
 }
 
 // FCFL (FIFO) page replacement
-void page_fcfl(Frames *f, int *pages, int n_pages) {
-    int done = 0, i = 0;
+int page_fcfl(Frames *f, int *pages, int n_pages) {
+    int done = 0, i = 0,hit=0;
     
     while (done < n_pages) {
         int found = 0;
@@ -49,6 +49,7 @@ void page_fcfl(Frames *f, int *pages, int n_pages) {
         if (!found) {
             f->frame[i] = pages[done];
             i = (i + 1) % f->n_fr;
+            hit++;
         }
         
         done++;
@@ -57,11 +58,12 @@ void page_fcfl(Frames *f, int *pages, int n_pages) {
             printf("%d ", f->frame[j]);
         printf("\n");
     }
+    return hit;
 }
 
 // LRU page replacement
-void page_lru(Frames *f, int *pages, int n_pages) {
-    int done = 0;
+int page_lru(Frames *f, int *pages, int n_pages) {
+    int done = 0,fault=0;
     
     while (done < n_pages) {
         int found = 0;
@@ -79,6 +81,7 @@ void page_lru(Frames *f, int *pages, int n_pages) {
             for (int j = 0; j < f->n_fr - 1; j++)
                 f->lru[j] = f->lru[j + 1];
             f->lru[f->n_fr - 1] = ind;
+            fault++;
         }
         
         done++;
@@ -87,11 +90,12 @@ void page_lru(Frames *f, int *pages, int n_pages) {
             printf("%d ", f->frame[j]);
         printf("\n");
     }
+    return fault;
 }
 
 // Optimal page replacement
-void page_opt(Frames *f, int *pages, int n_pages) {
-    int done = 0;
+int page_opt(Frames *f, int *pages, int n_pages) {
+    int done = 0,fault=0;
     
     while (done < n_pages) {
         int found = 0;
@@ -103,6 +107,7 @@ void page_opt(Frames *f, int *pages, int n_pages) {
         }
         
         if (!found) {
+            fault++;
             int max_distance = -1, replace_index = 0;
             
             for (int i = 0; i < f->n_fr; i++) {
@@ -128,9 +133,10 @@ void page_opt(Frames *f, int *pages, int n_pages) {
             printf("%d ", f->frame[j]);
         printf("\n");
     }
+    return fault;
 }
 
-int main() {
+int main(int argc,char**argv) {
     FILE *file = fopen("input.txt", "r");
     if (!file) {
         fprintf(stderr, "Error opening input.txt\n");
@@ -150,9 +156,23 @@ int main() {
     for (int i = 0; i < n_pages; i++)
         printf("%d ", pages[i]);
     printf("\n");
+    if (argv[1][0]=='o')
+    {
+        printf("\nOptimal Page Replacement:\n");
+        printf("\nfaults: %d",page_opt(f, pages, n_pages));
+        
+    }else if (argv[1][0]=='f')
+    {
+       printf("\nfcfl Page Replacement:\n");
+        printf("\nfaults: %d",page_fcfl(f, pages, n_pages)); 
+    }else if (argv[1][0]=='l')
+    {
+        printf("\nlru Page Replacement:\n");
+        printf("\nfaults: %d",page_lru(f, pages, n_pages));
+    }
     
-    printf("\nOptimal Page Replacement:\n");
-    page_opt(f, pages, n_pages);
+    
+     
     
     // Reset and run other methods if needed
     free_frames(f);
