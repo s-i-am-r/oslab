@@ -81,5 +81,6 @@ int main(){
         pthread_create(&x,NULL,park_a_car,NULL);
         pthread_detach(x);
     }
+
     
 }
