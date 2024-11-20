@@ -1,27 +1,25 @@
 #include<stdio.h>
-#include<stdlib.h>
-
-
-
-int main(){
-    FILE* f=fopen("pippp","wr");
-    int cmd,t_no;
-    char buf[100];
+#include<fcntl.h>
+#include<unistd.h>
+#include<string.h>
+int  main(){
+    int writefd=open("pipo",O_WRONLY);
+    int readfd=open("pipo",O_RDONLY);
+    char buf[10],content[50];
     while (1)
     {
-        memset(buf,0,100);
-        scanf("%d",&cmd);
-        if (cmd==0)
-        {
-            fwrite("0",1,2,f);
-            fread(buf,1,100,f);
-        }else if (cmd==1)
-        {
+        printf("$ ");
+        memset(buf,0,strlen(buf));
+        fgets(buf,10,stdin);
+        puts("scanned");
+        write(writefd,buf,strlen(buf));
+        usleep(1000);
+        memset(content,0,50);
+        read(readfd,content,50);
+        printf("%s\n",content);
 
-            scanf("%d",&t_no);
-        }
-        
-        
     }
     
+  
+
 }
